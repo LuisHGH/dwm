@@ -24,16 +24,17 @@ static const char *colors[][3]      = {
 };
 
 /* tagging */
-static const char *tags[] = { "", "", "", "", "", "", "7", "8", "9" };
+static const char *tags[] = { "", "", "", "", "", "", "", "", "" };
 
 static const Rule rules[] = {
 	/* xprop(1):
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-//	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	/* class                instance    title       tags mask     isfloating   monitor */
+	{ "Gimp",               NULL,       NULL,       1 << 6,            0,           -1 },
+	{ "TelegramDesktop",    NULL,       NULL,       1 << 1,            0,           -1 },
+	{ "Steam"               NULL,       NULL,       1 << 7,            0,           -1 },
 };
 
 /* layout(s) */
@@ -43,9 +44,9 @@ static const int resizehints = 1;    /* 1 means respect size hints in tiled resi
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-	{ "[]=",      tile },    /* first entry is default */
-	{ "><>",      NULL },    /* no layout function means floating behavior */
-	{ "[M]",      monocle },
+	{ " ﬿",      tile },    /* first entry is default */
+	{ " ",      NULL },    /* no layout function means floating behavior */
+	{ " ",      monocle },
 };
 
 /* key definitions */
@@ -63,13 +64,23 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "alacritty", NULL };
-static const char *togg_kbl[] = { "$HOME/bin/keyboard_layout_switch.sh", NULL };
+static const char *volmtcmd[] = { "pactl", "set-sink-mute", "@DEFAULT_SINK@", "toggle", NULL };
+static const char *volupcmd[] = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "+10%", NULL };
+static const char *voldwcmd[] = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "-10%", NULL };
+static const char *printcmd[] = { "flameshot", "gui", "-d", "200" };
+
+/* scripts */
+static const char *togg_kbl[] = { "/home/luishgh/bin/keyboard_layout_switch.sh", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
-	{ ControlMask                   XK_space,  spawn,          {.v = togg_kbl } },
+	{ ControlMask|ShiftMask,        XK_space,  spawn,          {.v = togg_kbl } },
+    { 0,                            0x1008ff12,spawn,          {.v = volmtcmd } },
+    { 0,                            0x1008ff11,spawn,          {.v = voldwcmd } },
+    { 0,                            0x1008ff13,spawn,          {.v = volupcmd } },
+    { 0,                            0xff61,    spawn,          {.v = printcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
